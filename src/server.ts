@@ -1,25 +1,22 @@
-
 import express, { Request, Response } from 'express';
-import {Pool} from "pg";
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
-import path from "path";
+import path from 'path';
 
-dotenv.config({path:path.join(process.cwd(), ".env")});
+dotenv.config({ path: path.join(process.cwd(), '.env') });
 const app = express();
 const port = 5000;
 
 //parser
-app.use(express.json())
-
+app.use(express.json());
 
 const pool = new Pool({
-    connectionString:`${process.env.CONNECTION_STR}`
+  connectionString: `${process.env.CONNECTION_STR}`,
 });
 
-
 //DB
-const initDB = async()=>{
-    await pool.query(`
+const initDB = async () => {
+  await pool.query(`
         CREATE TABLE IF NOT EXISTS users(
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
@@ -29,9 +26,9 @@ const initDB = async()=>{
         address TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
-        )`)
+        )`);
 
-        await pool.query(`
+  await pool.query(`
         CREATE TABLE IF NOT EXISTS todos(
         id SERIAL PRIMARY KEY,
         user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -41,22 +38,34 @@ const initDB = async()=>{
         deu_date DATE,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
-        )`)
-
-}
-initDB()
-app.get('/', (req:Request, res:Response ) => {
+        )`);
+};
+initDB();
+app.get('/', (req: Request, res: Response) => {
   res.send('Hello Shariful islams!');
 });
 
-app.post('/', (req:Request, res:Response ) => {
-    console.log(req)
-  res.status(201).json({
-    success:true,
-    message:"Api is Working"
-  })
-});
+app.post('/users', async (req: Request, res: Response) => {
+  const { name, email } = req.body;
 
+  try {
+    const result = await pool.query(
+      `INSERT INTO users(name, email )VALUES($1,$2) RETURNING *`,
+      [name, email],
+    );
+    // console.log(result.rows[0]);
+    res.status(201).json({
+      success: true,
+      message: 'Data Inserted Successfully',
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
