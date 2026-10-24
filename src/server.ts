@@ -45,6 +45,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello Shariful islams!');
 });
 
+///CRUD
 app.post('/users', async (req: Request, res: Response) => {
   const { name, email } = req.body;
 
@@ -57,6 +58,49 @@ app.post('/users', async (req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       message: 'Data Inserted Successfully',
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+app.get('/users', async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query('SELECT * FROM users');
+    // console.log(result.rows[0]);
+    res.status(201).json({
+      success: true,
+      message: 'Users Retrieved Successfully',
+      data: result.rows,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+app.get('/users/:id', async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`SELECT * FROM users WHERE id = $1`, [
+      req.params.id,
+    ]);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: 'false',
+        message: 'user not found!',
+      });
+    }
+    // console.log(result.rows[0]);
+    res.status(201).json({
+      success: true,
+      message: 'Users Retrieved Successfully',
       data: result.rows[0],
     });
   } catch (error: any) {
