@@ -7,6 +7,7 @@ import initDB, { pool } from './config/db';
 import logger from './config/middlware';
 import { userRoutes } from './modules/user/user.route';
 import { todosRoutes } from './modules/todo/todo.routes';
+import { authRoutes } from './modules/auth/auth.routes';
 
 const app = express();
 const port = config.port;
@@ -20,6 +21,8 @@ initDB();
 app.use('/users', userRoutes);
 app.use('/todos', todosRoutes);
 
+//auth Routes
+app.use("auth", authRoutes)
 app.get('/', logger, (req: Request, res: Response) => {
   res.send('Hello Shariful islams!');
 });

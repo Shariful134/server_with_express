@@ -1,4 +1,4 @@
-declare const createUser: (name: string, email: string) => Promise<import("pg").QueryResult<any>>;
+declare const createUser: (paylod: Record<string, unknown>) => Promise<import("pg").QueryResult<any>>;
 declare const getUser: () => Promise<import("pg").QueryResult<any>>;
 declare const getSingleUser: (id: string) => Promise<import("pg").QueryResult<any>>;
 declare const userUpdate: (name: string, email: string, id: string) => Promise<import("pg").QueryResult<any>>;
