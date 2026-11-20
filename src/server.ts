@@ -22,7 +22,7 @@ app.use('/users', userRoutes);
 app.use('/todos', todosRoutes);
 
 //auth Routes
-app.use("auth", authRoutes)
+app.use("/auth", authRoutes)
 app.get('/', logger, (req: Request, res: Response) => {
   res.send('Hello Shariful islams!');
 });
