@@ -2,11 +2,11 @@ import { pool } from '../../config/db';
 import bcrypt from "bcryptjs";
 
 const createUser = async (paylod: Record<string, unknown>) => {
-  const { name, email, password } = paylod;
+  const { name, email, role, password } = paylod;
   const hashedpassword = await bcrypt.hash(password as string, 10);
   const result = await pool.query(
-    `INSERT INTO users(name, email,password )VALUES($1,$2,$3) RETURNING *`,
-    [name, email, hashedpassword],
+    `INSERT INTO users(name, email,role, password )VALUES($1,$2,$3, $4) RETURNING *`,
+    [name, email, role, hashedpassword],
   );
   return result;
 };

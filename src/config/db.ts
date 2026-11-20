@@ -10,13 +10,14 @@ const initDB = async () => {
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         email VARCHAR(150) UNIQUE NOT NULL,
+        role VARCHAR(50) NOT NULL,
         age INT,
         phone VARCHAR(15),
         password TEXT NOT NULL,
         address TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
-        )`); 
+        )`);
 
   await pool.query(`
         CREATE TABLE IF NOT EXISTS todos(
